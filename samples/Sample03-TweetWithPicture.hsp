@@ -1,0 +1,32 @@
+#include "../TsubuyakiSoup_mod.hsp"
+#include "key.hsp"
+
+	exist "Token.txt"
+	if strsize < 0:dialog "先にSample01を実行しアクセストークンを取得してください":end
+	sdim tokenTxt,strsize+1
+	bload "Token.txt",tokenTxt
+	notesel tokenTxt
+	noteget ACCESS_TOKEN,1
+	noteget ACCESS_SECRET,2
+	noteunsel
+	
+	tCupInit "test", CONSUMER_KEY, CONSUMER_SECRET, 10
+	setAccessToken ACCESS_TOKEN, ACCESS_SECRET
+	
+	sdim imagename,256
+	chdir dir_tv
+	imagename(0) = "../doclib/hsp3ttl.jpg"
+	media_upload imagename,1,mediaids
+	if stat = 0{
+		tweet "Hot Soup Processor Ver3",,mediaids
+		if stat != 200{
+			dialog "ツイートに失敗しました"
+		}
+	} else {
+		dialog "画像のアップロードに失敗しました :"+stat
+	}
+
+	response = "#####  HEADER  ######\n"+getResponseHeader()+"\n\n#####  BODY  #####\n"+getResponseBody()
+	pos 0,0
+	mesbox response, 640, 480, 4
+	

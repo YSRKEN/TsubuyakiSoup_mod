@@ -1,0 +1,44 @@
+#include "../TsubuyakiSoup_mod.hsp"
+#include "key.hsp"
+
+	if (CONSUMER_KEY == ""):dialog "æ‚Ékey.hsp‚ÉCONSUMER_KEY‚ÆCONSUMER_SECRET‚ð“o˜^‚µ‚Ä‚­‚¾‚³‚¢":end
+
+	tCupInit "testClient", CONSUMER_KEY, CONSUMER_SECRET, 10
+	
+	address = getAuthorizeAddress()
+	
+	response = "#####  HEADER  ######\n"+getResponseHeader()+"\n\n#####  BODY  #####\n"+getResponseBody()
+	mesbox response, 640, 400, 4
+	mesboxID = stat
+	if address != "Error"{
+		exec address,16
+	} else {
+		dialog "Žæ“¾‚ÉŽ¸”s‚µ‚½‚½‚ßI—¹‚µ‚Ü‚·"
+	}
+	
+	PIN = ""
+	pos 0,400
+	input PIN,100,20
+	button "OK",*ok
+	stop
+	
+*ok
+	
+	userdata = ""
+	ACCESS_TOKEN = ""
+	ACCESS_SECRET = ""
+	
+	publishAccessToken ACCESS_TOKEN,ACCESS_SECRET,userdata,PIN
+	objprm mesboxID, "#####  HEADER  ######\n"+getResponseHeader()+"\n\n#####  BODY  #####\n"+getResponseBody()
+	clrobj 1,2
+	sdim savetext,1024
+	savetext += userdata+"\n"
+	savetext += ACCESS_TOKEN+"\n"
+	savetext += ACCESS_SECRET
+
+	exist "Token.txt"
+	if strsize > 0:delete "Token.txt"
+	bsave "Token.txt",savetext,strlen(savetext)
+
+	mes "Token.txt‚ð•Û‘¶‚µ‚Ü‚µ‚½"
+	stop

@@ -1,0 +1,21 @@
+#include "../TsubuyakiSoup_mod.hsp"
+#include "key.hsp"
+
+	exist "Token.txt"
+	if strsize < 0:dialog "先にSample01を実行しアクセストークンを取得してください":end
+	sdim tokenTxt,strsize+1
+	bload "Token.txt",tokenTxt
+	notesel tokenTxt
+	noteget ACCESS_TOKEN,1
+	noteget ACCESS_SECRET,2
+	noteunsel
+	
+	tCupInit "test", CONSUMER_KEY, CONSUMER_SECRET, 10
+	setAccessToken ACCESS_TOKEN, ACCESS_SECRET
+	
+	tweet "どすこい"
+	
+	response = "#####  HEADER  ######\n"+getResponseHeader()+"\n\n#####  BODY  #####\n"+getResponseBody()
+	mesbox response, 640, 480, 4
+	
+	stop
